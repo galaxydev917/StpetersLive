@@ -1,0 +1,7 @@
+{
+  "name": "stpeterslive",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}
