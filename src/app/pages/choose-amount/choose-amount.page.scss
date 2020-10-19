@@ -1,14 +1,18 @@
 ion-title{
     padding-inline-start: 0px;
     padding-inline-end: 0px;
+    padding-top: 10px;
 }
 ion-checkbox{
+    margin-inline-end: 12px;
+}
+ion-icon{
     margin-inline-end: 12px;
 }
 
 .header-background-color{
     --background: #414278;
-    padding-top: 10px;
+    //padding-top: 10px;
 }
 h1{
     margin-top: 0px;
@@ -62,6 +66,7 @@ h3{
     align-items: center;
     color: grey;
     font-size: large;
+    margin-top: 10px;
     &:hover{
         border-color: #fe4320;
         color: #fe4320;

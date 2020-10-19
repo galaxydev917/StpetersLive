@@ -25,6 +25,11 @@
               </ion-list>
               <ion-list class="line-input"> 
                 <ion-item mode="md">
+                  <ion-input class="ion-text-left" placeholder="Your Email" type="text" formControlName="email"></ion-input>
+                </ion-item> 
+              </ion-list>              
+              <ion-list class="line-input"> 
+                <ion-item mode="md">
                   <ion-input class="ion-text-left" placeholder="Phone" type="number" formControlName="phone"></ion-input>
                 </ion-item> 
               </ion-list>      
@@ -37,7 +42,7 @@
                 <ion-item mode="md">
                   <ion-select ok-text="Select" cancel-text="Cancel" placeholder="Which Service are you coming to" style="max-width: 100%; width: 100%;" formControlName="coming_service">
                     <ion-select-option value="Sunday 7:00 am">Sunday 7:00 am</ion-select-option>
-                    <ion-select-option value="Sunday 9:00 am">Sunday 9:00 am</ion-select-option>
+                    <ion-select-option value="Sunday 9:30 am">Sunday 9:30 am</ion-select-option>
                     <ion-select-option value="Sunday 5:45 pm">Sunday 5:45 pm</ion-select-option>
                     <ion-select-option value="Thursday 12 noon">Thursday 12 noon</ion-select-option>
                     <ion-select-option value="Other">Other</ion-select-option>
@@ -48,7 +53,7 @@
                 <ion-spinner name="crescent"></ion-spinner>
               </div>                              
               <ion-button class="button-h" mode="ios" type="submit"  fill="solid" size="default" [disabled]="!validationsform.valid" shape="round" expand="block">
-                Regist
+                Register
               </ion-button>
             </form>
           </ion-col>

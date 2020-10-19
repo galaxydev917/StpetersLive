@@ -25,6 +25,10 @@ export class RegisterPage implements OnInit {
       name: new FormControl('', Validators.compose([
         Validators.required
       ])),
+      email: new FormControl('', Validators.compose([
+        Validators.required,
+        Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')
+      ])),
       phone: new FormControl('', Validators.compose([
         Validators.required
       ])),
@@ -45,6 +49,7 @@ export class RegisterPage implements OnInit {
         'Content-Type': 'application/json',
       },
       name: value.name,
+      email: value.email,
       phone: value.phone,
       service: value.coming_service,
       address: value.address

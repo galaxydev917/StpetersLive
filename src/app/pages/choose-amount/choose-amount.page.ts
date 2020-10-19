@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Location } from "@angular/common";
-import { LoadingController, MenuController } from '@ionic/angular';
+import { LoadingController, MenuController, AlertController } from '@ionic/angular';
 import { Stripe } from '@ionic-native/stripe/ngx';
 import { HttpClient } from "@angular/common/http";
 import { Storage } from '@ionic/storage';
@@ -60,6 +60,7 @@ export class ChooseAmountPage implements OnInit {
     private http: HttpClient,
     private storage: Storage,
     public menuCtrl: MenuController,
+    public alertController: AlertController,
     public loadingController: LoadingController
 
   ) { }
@@ -139,52 +140,45 @@ export class ChooseAmountPage implements OnInit {
     this.amount = obj.value;
   }
 
-  isValidDate(dateString)
+  isValidDate(dValue)
   {
-      // First check for the pattern
-      if(!/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateString))
-          return false;
+    var result = false;
+    dValue = dValue.split('/');
+    var pattern = /^\d{2}$/;
   
-      // Parse the date parts to integers
-      var parts = dateString.split("/");
-      var day = parseInt(parts[1], 10);
-      var month = parseInt(parts[0], 10);
-      var year = parseInt(parts[2], 10);
-  
-      // Check the ranges of month and year
-      if(year < 1000 || year > 3000 || month == 0 || month > 12)
-          return false;
-  
-      var monthLength = [ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ];
-  
-      // Adjust for leap years
-      if(year % 400 == 0 || (year % 100 != 0 && year % 4 == 0))
-          monthLength[1] = 29;
-  
-      // Check the range of the day
-      return day > 0 && day <= monthLength[month - 1];
+    if (dValue[0] < 1 || dValue[0] > 12)
+        result = true;
+    if (!pattern.test(dValue[0]) || !pattern.test(dValue[1]))
+        result = true;
+    if (dValue[2])
+        result = true;
+
+    return result;
   }
+
   payWithOldInfo(){
     this.getObject('paymentInfo').then(result => {
       if (result != null) {
         this.paymentInfo = JSON.parse(result);
         this.amount = this.paymentInfo.amount;
-        this.payWithStripe(this.paymentInfo);
+        this.presentAlertConfirm(this.paymentInfo);
       }
     }).catch(e => {
       console.log('error: ', e);
     });
   }
+
   payWithStripe(value) {
     this.paymentInfo = value;
-    if(!this.isValidDate(value.expiration_date)){
+    if(this.isValidDate(value.expiration_date)){
       this.presentAlert("Invalid format expiration date.");
       return;
     }  
     this.stripe.setPublishableKey(this.stripe_key);
     var number = value.card_number.split(" ").join("");
     var expMonth = value.expiration_date.split('/')[0];
-    var expYear = value.expiration_date.split('/')[2];
+    var expYear = '20';
+    expYear = expYear.concat(value.expiration_date.split('/')[1]);
     var cvc = value.cvv;
 
     this.cardDetails = {
@@ -203,6 +197,7 @@ export class ChooseAmountPage implements OnInit {
         this.presentAlert(error.message);
       });
   }  
+
   makePayment(token, email) {
     this.http.post('https://stpetersgc.com.au/app/stripeforapp/index.php', {
           headers: {
@@ -223,7 +218,38 @@ export class ChooseAmountPage implements OnInit {
         this.clearForm();
     });
   }  
+  
+  changeExpirationDate(e){
+    var currentVal = e.detail.value;
+    if(currentVal.length == 2 && (currentVal.indexOf('/') == -1)){
+      this.validationsform.controls['expiration_date'].setValue(currentVal.concat('/'));
+    }
+  }
 
+  async presentAlertConfirm(value) {
+    const alert = await this.alertController.create({
+      //cssClass: 'alertCancel',
+     // header: 'Confirm!',
+      message: 'Are you sure Donate?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            console.log('Confirm Cancel: blah');
+          }
+        }, {
+          text: 'Ok',
+          handler: () => {
+            this.payWithStripe(value);
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
   async presentAlert(value) {
     const loading = await this.loadingController.create({
       spinner: null,

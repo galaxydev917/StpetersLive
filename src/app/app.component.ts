@@ -35,7 +35,7 @@ export class AppComponent {
     },
     {
       title: 'Blog/News',
-      url: '/blog-news',
+      url: '/bolg-news',
       icon: './assets/menu_icon/newspaper.svg'
     },   
     {
