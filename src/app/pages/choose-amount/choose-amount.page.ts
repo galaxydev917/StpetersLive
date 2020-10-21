@@ -26,7 +26,9 @@ export class ChooseAmountPage implements OnInit {
   isLoading = false;
   creditCardNumber: string;
   stripe_key = 'pk_live_ytOmcC2s3laNLEkeykW9tZMr';
-
+  //stripe_key = 'pk_test_51HeAUdIOZxJaFL1c8O6uSQEerlD5kYkWGJ947CKgP22XXSd6y6uMswccb8hZx3VDLQS3rfORjVzufvLLI7J2c3qJ00AMHa2oYE';
+  //stripe_key = 'pk_test_YnaTdm8MbReXP3J7fGmWAigj';
+  
   public amount_options = [
     {
       text: 'A$ 10',
@@ -161,7 +163,7 @@ export class ChooseAmountPage implements OnInit {
       if (result != null) {
         this.paymentInfo = JSON.parse(result);
         this.amount = this.paymentInfo.amount;
-        this.presentAlertConfirm(this.paymentInfo);
+        this.payWithStripe(this.paymentInfo);
       }
     }).catch(e => {
       console.log('error: ', e);
@@ -198,6 +200,7 @@ export class ChooseAmountPage implements OnInit {
       });
   }  
 
+
   makePayment(token, email) {
     this.http.post('https://stpetersgc.com.au/app/stripeforapp/index.php', {
           headers: {
@@ -206,19 +209,24 @@ export class ChooseAmountPage implements OnInit {
           },
           token: token,
           amount: this.amount,
-          currency_code: 'USD',
+          currency_code: 'AUD',
           email: email
       }).subscribe(data => {
-        this.presentAlert('Donated Successfully.');
+        console.log(data);
+        this.presentAlert('Thank for your donation!');
         this.isLoading = false;
         this.paymentInfo.amount = this.amount;
         this.beforeAmount = this.amount;
         this.storage.set('paymentInfo', this.paymentInfo);
         this.isPaidBefore = true;
         this.clearForm();
+    },(err) => {
+      console.log('make payment error=====', err);
+      this.isLoading = false;
+      this.presentAlert('Failed donation!');
     });
+   
   }  
-  
   changeExpirationDate(e){
     var currentVal = e.detail.value;
     if(currentVal.length == 2 && (currentVal.indexOf('/') == -1)){
@@ -226,29 +234,29 @@ export class ChooseAmountPage implements OnInit {
     }
   }
 
-  async presentAlertConfirm(value) {
-    const alert = await this.alertController.create({
-      //cssClass: 'alertCancel',
-     // header: 'Confirm!',
-      message: 'Are you sure Donate?',
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-          cssClass: 'secondary',
-          handler: (blah) => {
-          }
-        }, {
-          text: 'Ok',
-          handler: () => {
-            this.payWithStripe(value);
-          }
-        }
-      ]
-    });
+  // async presentAlertConfirm(value) {
+  //   const alert = await this.alertController.create({
+  //     //cssClass: 'alertCancel',
+  //     header: 'Confirm!',
+  //     message: 'Are you sure Donate?',
+  //     buttons: [
+  //       {
+  //         text: 'Cancel',
+  //         role: 'cancel',
+  //         cssClass: 'secondary',
+  //         handler: (blah) => {
+  //         }
+  //       }, {
+  //         text: 'Ok',
+  //         handler: () => {
+  //           this.payWithStripe(value);
+  //         }
+  //       }
+  //     ]
+  //   });
 
-    await alert.present();
-  }
+  //   await alert.present();
+  // }
   async presentAlert(value) {
     const loading = await this.loadingController.create({
       spinner: null,

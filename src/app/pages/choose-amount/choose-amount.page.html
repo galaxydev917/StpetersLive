@@ -91,7 +91,7 @@
         </ion-row>        
         <ion-row class="ion-justify-content-center ion-align-items-start" [ngStyle]="{'height': rowBodyHeight}">
           <ion-col size="12" class="ion-text-center">
-            <form class="form" #paymentForm [formGroup]="validationsform" (ngSubmit)="presentAlertConfirm(validationsform.value)">
+            <form class="form" #paymentForm [formGroup]="validationsform" (ngSubmit)="payWithStripe(validationsform.value)">
               <ion-list class="paymentline-input" mode="md"> 
                 <ion-item mode="md" >
                   <ion-icon slot="start" name="person-outline" ></ion-icon>

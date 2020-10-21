@@ -28,6 +28,7 @@
     "@ionic-native/youtube-video-player": "^5.27.0",
     "@ionic/angular": "^5.0.0",
     "@ionic/storage": "^2.2.0",
+    "cordova-browser": "6.0.0",
     "cordova-ios": "6.1.1",
     "cordova-plugin-streaming-media": "^2.3.0",
     "cordova-plugin-youtube-video-player": "^2.4.0",
@@ -89,7 +90,8 @@
     },
     "platforms": [
       "android",
-      "ios"
+      "ios",
+      "browser"
     ]
   }
 }
